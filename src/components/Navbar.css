@@ -1,0 +1,123 @@
+.global-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 3rem;
+  background: rgba(4, 15, 22, 0.8);
+  border-bottom: 1px solid rgba(10, 200, 185, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(10px);
+}
+
+.nav-left, .nav-right {
+  flex: 1;
+}
+
+.nav-center {
+  display: flex;
+  gap: 3rem;
+  justify-content: center;
+}
+
+.brand-link {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  text-decoration: none;
+}
+
+.brand-logo {
+  width: 36px;
+  height: 36px;
+  background: rgba(10, 200, 185, 0.1);
+  border: 1px solid var(--hextech-magic);
+  border-radius: 8px; /* Slightly rounded to simulate hexagon/octagon */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(45deg);
+}
+
+.brand-logo svg {
+  transform: rotate(-45deg); /* Counter rotate icon */
+}
+
+.brand-text {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  color: var(--hextech-gold-light);
+  letter-spacing: 1px;
+}
+
+.nav-link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding-bottom: 5px;
+  transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+  color: var(--hextech-gold-light);
+}
+
+.nav-link.active {
+  color: var(--hextech-magic);
+}
+
+.nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--hextech-magic);
+  box-shadow: 0 0 8px var(--hextech-magic);
+}
+
+.nav-right {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.user-profile-widget {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.summoner-name {
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.summoner-rank {
+  color: var(--hextech-gold);
+  font-size: 0.75rem;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--hextech-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--hextech-gold);
+}

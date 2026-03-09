@@ -1,0 +1,297 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@400;600&display=swap');
+
+:root {
+  /* League of Legends aesthetics variables - Updated for Hextech Trivia */
+  --bg-dark: #02090f;
+  --bg-panel: rgba(4, 15, 22, 0.85);
+  --bg-glass: rgba(10, 20, 30, 0.6);
+  --bg-glass-hover: rgba(10, 200, 185, 0.1);
+  
+  --hextech-gold: #c8aa6e;
+  --hextech-gold-light: #f0e6d2;
+  --hextech-gold-dark: #7a5c29;
+  
+  --hextech-blue: #086175;
+  --hextech-blue-dark: #032b36;
+  --hextech-magic: #0ac8b9;
+  --hextech-magic-bright: #13b8a6;
+  
+  /* Quiz specific colors */
+  --option-q: #d84b4b; /* Red */
+  --option-w: #3776d6; /* Blue */
+  --option-e: #d69837; /* Amber/Orange */
+  --option-r: #47a04f; /* Green */
+  
+  --text-primary: #f0e6d2;
+  --text-secondary: #a09b8c;
+
+  --border-gold: 2px solid var(--hextech-gold);
+  --border-glow: inset 0 0 10px rgba(200, 170, 110, 0.2);
+  
+  /* Fonts - Cinematic & clean */
+  --font-heading: 'Cinzel', serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  
+  --magic-glow: 0 0 10px rgba(10, 200, 185, 0.5), 0 0 20px rgba(10, 200, 185, 0.3);
+  --gold-glow: 0 0 15px rgba(200, 170, 110, 0.4), 0 0 30px rgba(200, 170, 110, 0.2);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
+  min-height: 100vh;
+  /* Complex radial gradient matching the reference image */
+  background: radial-gradient(circle at 50% 15%, rgba(6, 45, 60, 0.8) 0%, rgba(2, 9, 15, 1) 60%);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--hextech-gold-light);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+button {
+  font-family: var(--font-heading);
+  cursor: pointer;
+}
+
+/* Glass panel utility */
+.glass-panel {
+  background: var(--bg-glass);
+  backdrop-filter: blur(10px);
+  border: var(--border-gold);
+  box-shadow: var(--border-glow);
+  border-radius: 4px;
+}
+
+/* Layout Utilities */
+.page-container {
+  min-height: 100vh;
+  padding: 2rem;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.text-center { text-align: center; }
+.full-width { width: 100%; }
+.mt-4 { margin-top: 1rem; }
+.mb-4 { margin-bottom: 1rem; }
+.my-4 { margin-top: 1rem; margin-bottom: 1rem; }
+.mx-4 { margin-left: 1rem; margin-right: 1rem; }
+.flex-grow { flex-grow: 1; }
+
+.block { display: block; }
+.mb-2 { margin-bottom: 0.5rem; }
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: bold;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  border: none;
+}
+
+/* Buttons Custom Overrides */
+.primary-btn {
+  background: linear-gradient(90deg, #0ac8b9 0%, #032b36 100%);
+  color: var(--hextech-gold-light);
+  border: none;
+  border-radius: 0;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+  font-family: var(--font-heading);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 1rem 2rem;
+}
+
+.primary-btn:hover {
+  background: linear-gradient(90deg, #13b8a6 0%, #086175 100%);
+  color: white;
+  text-shadow: none;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(10, 200, 185, 0.4);
+}
+
+.secondary-btn {
+  background: transparent;
+  color: var(--hextech-gold);
+  border: 1px solid var(--hextech-gold);
+  border-radius: 0;
+  font-family: var(--font-heading);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 1rem 2rem;
+}
+
+.secondary-btn:hover {
+  border-color: var(--hextech-gold-light);
+  color: var(--hextech-gold-light);
+  background: rgba(200, 170, 110, 0.1);
+  text-shadow: none;
+}
+
+.outline-btn {
+  background: transparent;
+  border: 1px dashed var(--hextech-gold-dark);
+  color: var(--text-secondary);
+}
+
+.outline-btn:hover {
+  border-color: var(--hextech-gold);
+  color: var(--hextech-gold-light);
+  background: rgba(200, 170, 110, 0.1);
+}
+
+.icon-btn {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.icon-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.icon-btn.danger:hover {
+  background: rgba(255, 0, 0, 0.2);
+  color: #ff4e4e;
+  border-color: #ff4e4e;
+}
+
+/* Auth Panels & Forms */
+.auth-panel {
+  width: 100%;
+  max-width: 400px;
+  padding: 2.5rem 2rem;
+  text-align: center;
+}
+
+.auth-panel h2 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.auth-panel p {
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-family: var(--font-heading);
+  color: var(--hextech-gold);
+  font-size: 0.9rem;
+}
+
+.form-group input, 
+.title-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--hextech-gold-dark);
+  border-radius: 4px;
+  color: white;
+  font-family: var(--font-body);
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.title-input:focus {
+  outline: none;
+  border-color: var(--hextech-magic);
+  box-shadow: inset 0 0 10px rgba(10, 200, 185, 0.2);
+}
+
+.pin-input {
+  font-size: 2rem;
+  letter-spacing: 0.5rem;
+  font-family: var(--font-heading);
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.auth-footer {
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.auth-footer a, 
+.back-link {
+  color: var(--hextech-gold);
+  text-decoration: none;
+  transition: color 0.3s ease;
+  font-weight: 600;
+}
+
+.back-link {
+  display: inline-block;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.auth-footer a:hover, 
+.back-link:hover {
+  color: var(--hextech-magic);
+  text-shadow: 0 0 8px rgba(10, 200, 185, 0.5);
+  opacity: 1;
+}
+
+/* Base custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-dark);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--hextech-gold-dark);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--hextech-gold);
+}
