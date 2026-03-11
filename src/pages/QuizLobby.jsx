@@ -26,28 +26,53 @@ export default function QuizLobby() {
   const fetchPublicQuizzes = async () => {
     try {
       setLoading(true);
+      console.log("[LOBBY] Attempting to fetch all trials...");
+      
+      // Attempt to fetch with profiles, but fall back if relationship is missing
       const { data, error } = await supabase
         .from('quizzes')
         .select(`
           *,
-          profiles (username)
+          profiles:creator_id (username)
         `)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      setQuizzes(data || []);
+      if (error) {
+        console.warn('[LOBBY] Fetch with join failed, trying simple fetch:', error.message);
+        const { data: simpleData, error: simpleError } = await supabase
+          .from('quizzes')
+          .select('*')
+          .order('created_at', { ascending: false });
+        
+        if (simpleError) throw simpleError;
+        setQuizzes(simpleData || []);
+      } else {
+        // Map the joined data so we don't break existing UI expectations
+        const mappedData = data.map(q => ({
+          ...q,
+          profiles: q.profiles || { username: 'Ancient Mage' }
+        }));
+        setQuizzes(mappedData);
+      }
+      
+      console.log("[LOBBY] Load complete. Items found:", data?.length || 0);
     } catch (error) {
-      console.error('Error fetching public quizzes:', error.message);
+      console.error('[LOBBY] CRITICAL FETCH ERROR:', error.message);
     } finally {
       setLoading(false);
     }
   };
 
   const filteredQuizzes = useMemo(() => {
+    console.log("[LOBBY] Current quizzes in state:", quizzes.length);
     let result = quizzes;
     
     if (searchQuery.trim()) {
-      result = result.filter(q => q.title.toLowerCase().includes(searchQuery.toLowerCase()));
+      const lowerQuery = searchQuery.toLowerCase();
+      result = result.filter(q => 
+        q.title.toLowerCase().includes(lowerQuery) || 
+        (q.tags && q.tags.some(tag => tag.toLowerCase().includes(lowerQuery)))
+      );
     }
     
     if (selectedTags.length > 0) {
@@ -57,6 +82,7 @@ export default function QuizLobby() {
       );
     }
     
+    console.log("[LOBBY] Filtered result count:", result.length);
     return result;
   }, [quizzes, searchQuery, selectedTags]);
 

@@ -375,12 +375,12 @@ export default function QuizMakerEditor() {
       </div>
 
       <div className="editor-main-content">
-        {/* TRIAL SPECIALIZATIONS - SLIMMER BAR */}
-        <div className="editor-tags-wide glass-panel mb-2" style={{ padding: '0.4rem 1.5rem', minHeight: 'auto' }}>
-          <span style={{ color: 'var(--hextech-gold)', fontSize: '0.75rem', fontWeight: 'bold', letterSpacing: '1px', marginRight: '1rem' }}>
-            TRIAL SPECIALIZATIONS:
+        {/* TRIAL SPECIALIZATIONS - ULTRA SLIM BAR */}
+        <div className="editor-tags-wide glass-panel mb-2" style={{ padding: '0.3rem 1.2rem', minHeight: 'auto', display: 'flex', alignItems: 'center' }}>
+          <span style={{ color: 'var(--hextech-gold)', fontSize: '0.7rem', fontWeight: 'bold', letterSpacing: '1px', marginRight: '1rem', whiteSpace: 'nowrap' }}>
+            SPECIALIZATIONS:
           </span>
-          <div className="tags-list" style={{ display: 'inline-flex', flexWrap: 'wrap', gap: '0.75rem' }}>
+          <div className="tags-list" style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginTop: 0 }}>
             {OFFICIAL_TAGS.map(tag => {
               const isActive = selectedTags.includes(tag);
               return (
