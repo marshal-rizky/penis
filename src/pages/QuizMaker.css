@@ -439,7 +439,7 @@
 .mini-tag-toggle {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(10, 200, 185, 0.3);
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
   padding: 0.5rem 1rem;
   border-radius: 4px;
   cursor: pointer;
@@ -461,6 +461,6 @@
   color: #000;
   border-color: var(--hextech-magic);
   font-weight: bold;
-  box-shadow: 0 0 15px var(--hextech-magic-glow);
+  box-shadow: var(--magic-glow);
 }
 

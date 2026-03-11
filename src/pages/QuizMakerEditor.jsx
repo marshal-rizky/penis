@@ -335,29 +335,6 @@ export default function QuizMakerEditor() {
         </div>
       </div>
 
-      {/* Tag Selection Section */}
-      <div className="editor-tags-section glass-panel mb-4" style={{ padding: '1.5rem', display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'center' }}>
-        <span style={{ color: 'var(--hextech-gold)', fontWeight: 'bold', marginRight: '0.5rem' }}>TRIAL SPECIALIZATIONS:</span>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-          {[
-            "Map Awareness",
-            "Wave Management",
-            "Champion Matchups",
-            "Lane Macro",
-            "Fighting Mechanics"
-          ].map(tag => (
-            <button 
-              key={tag} 
-              className={`mini-tag-toggle ${selectedTags.includes(tag) ? 'active' : ''}`}
-              onClick={() => toggleTag(tag)}
-              type="button"
-            >
-              {tag}
-            </button>
-          ))}
-        </div>
-      </div>
-
       <div className="editor-main-content">
         
         {/* Sidebar - Question List (Now floating) */}
@@ -386,6 +363,29 @@ export default function QuizMakerEditor() {
         {/* Main Editor Area (Centered) */}
         {q && (
           <div className="question-editor glass-panel">
+            {/* Tag Selection Integrated Here */}
+            <div className="editor-tags-section mb-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '1rem', marginBottom: '1.5rem', display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'center' }}>
+              <span style={{ color: 'var(--hextech-gold)', fontSize: '0.8rem', fontWeight: 'bold' }}>TRIAL TYPE:</span>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                {[
+                  "Map Awareness",
+                  "Wave Management",
+                  "Champion Matchups",
+                  "Lane Macro",
+                  "Fighting Mechanics"
+                ].map(tag => (
+                  <button 
+                    key={tag} 
+                    className={`mini-tag-toggle ${selectedTags.includes(tag) ? 'active' : ''}`}
+                    onClick={(e) => { e.stopPropagation(); toggleTag(tag); }}
+                    type="button"
+                  >
+                    {tag}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <div className="editor-top-bar">
               <h4>Question {activeQuestion + 1}</h4>
               <button 
