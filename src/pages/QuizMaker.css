@@ -430,3 +430,37 @@
 .empty-forge p {
   color: var(--text-secondary);
 }
+
+/* Tag Selection UI */
+.editor-tags-section {
+  border-left: 4px solid var(--hextech-magic);
+}
+
+.mini-tag-toggle {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(10, 200, 185, 0.3);
+  color: var(--text-tertiary);
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.3s ease;
+  font-family: var(--font-body);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.mini-tag-toggle:hover {
+  border-color: var(--hextech-magic);
+  background: rgba(10, 200, 185, 0.1);
+  color: white;
+}
+
+.mini-tag-toggle.active {
+  background: var(--hextech-magic);
+  color: #000;
+  border-color: var(--hextech-magic);
+  font-weight: bold;
+  box-shadow: 0 0 15px var(--hextech-magic-glow);
+}
+

@@ -111,11 +111,14 @@ export default function QuizMakerEditor() {
   };
 
   const toggleTag = (tag) => {
-    setSelectedTags(prev => 
-      prev.includes(tag) 
+    console.log("Toggling tag:", tag);
+    setSelectedTags(prev => {
+      const next = prev.includes(tag) 
         ? prev.filter(t => t !== tag) 
-        : [...prev, tag]
-    );
+        : [...prev, tag];
+      console.log("New selected tags:", next);
+      return next;
+    });
   };
 
   const setCorrectOption = (optIndex) => {
@@ -207,6 +210,7 @@ export default function QuizMakerEditor() {
       let currentQuizId = id;
 
       if (currentQuizId === 'new') {
+        console.log("Creating new quiz with tags:", selectedTags);
         const { data: newQuiz, error: insertError } = await supabase
           .from('quizzes')
           .insert([{ title, creator_id: user.id, tags: selectedTags }])
@@ -216,6 +220,7 @@ export default function QuizMakerEditor() {
         if (insertError) throw insertError;
         currentQuizId = newQuiz.id;
       } else {
+        console.log("Updating quiz", currentQuizId, "with tags:", selectedTags);
         const { error: updateError } = await supabase
           .from('quizzes')
           .update({ title, tags: selectedTags })
