@@ -130,6 +130,20 @@
   box-shadow: inset 0 0 10px rgba(10, 200, 185, 0.2);
 }
 
+.editor-tags-wide {
+  display: flex;
+  align-items: center;
+  padding: 1.5rem;
+  width: 100%;
+}
+
+.editor-grid-container {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
 .image-upload-area {
   width: 100%;
   height: 250px;

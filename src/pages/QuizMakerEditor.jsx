@@ -375,57 +375,57 @@ export default function QuizMakerEditor() {
       </div>
 
       <div className="editor-main-content">
-        
-        {/* Sidebar - Question List (Now floating) */}
-        <div className="editor-sidebar glass-panel">
-          <h3>Questions</h3>
-          <div className="question-list">
-            {questions.map((question, index) => (
-              <div 
-                key={question.id} 
-                className={`sidebar-item ${activeQuestion === index ? 'active' : ''}`}
-                onClick={() => setActiveQuestion(index)}
-              >
-                <span className="q-num">{index + 1}</span>
-                <span className="q-preview">{question.text || 'Empty Question'}</span>
-              </div>
-            ))}
+        {/* TRIAL SPECIALIZATIONS - WIDE BAR ABOVE GRID */}
+        <div className="editor-tags-wide glass-panel mb-4">
+          <span style={{ color: 'var(--hextech-gold)', fontSize: '0.9rem', fontWeight: 'bold', letterSpacing: '2px', marginRight: '2rem' }}>
+            TRIAL SPECIALIZATIONS:
+          </span>
+          <div className="tags-list" style={{ display: 'inline-flex', flexWrap: 'wrap', gap: '0.75rem' }}>
+            {OFFICIAL_TAGS.map(tag => {
+              const isActive = selectedTags.includes(tag);
+              return (
+                <button 
+                  key={tag} 
+                  type="button"
+                  className={`tag-widget ${isActive ? 'active' : ''}`}
+                  onClick={() => toggleTag(tag)}
+                >
+                  {tag}
+                  {isActive && <span className="tag-unselect-x">×</span>}
+                </button>
+              );
+            })}
           </div>
-          <button 
-            className="btn outline-btn full-width mt-4" 
-            onClick={addQuestion}
-          >
-            <Plus size={16} /> Add Question
-          </button>
         </div>
 
-        {/* Main Editor Area (Centered) */}
-        {q && (
-          <div className="question-editor glass-panel">
-            {/* Tag Selection Overhaul */}
-            <div className="editor-tags-section">
-              <span style={{ color: 'var(--hextech-gold)', fontSize: '0.8rem', fontWeight: 'bold', display: 'block', marginBottom: '1rem' }}>
-                TRIAL CLASSIFICATION:
-              </span>
-              <div className="tags-list">
-                {OFFICIAL_TAGS.map(tag => {
-                  const isActive = selectedTags.includes(tag);
-                  return (
-                    <button 
-                      key={tag} 
-                      type="button"
-                      className={`tag-widget ${isActive ? 'active' : ''}`}
-                      onClick={() => toggleTag(tag)}
-                    >
-                      {tag}
-                      {isActive && <span className="tag-unselect-x">×</span>}
-                    </button>
-                  );
-                })}
-              </div>
+        <div className="editor-grid-container">
+          {/* Sidebar - Question List (Left) */}
+          <div className="editor-sidebar glass-panel">
+            <h3>Questions</h3>
+            <div className="question-list">
+              {questions.map((question, index) => (
+                <div 
+                  key={question.id} 
+                  className={`sidebar-item ${activeQuestion === index ? 'active' : ''}`}
+                  onClick={() => setActiveQuestion(index)}
+                >
+                  <span className="q-num">{index + 1}</span>
+                  <span className="q-preview">{question.text || 'Empty Question'}</span>
+                </div>
+              ))}
             </div>
+            <button 
+              className="btn outline-btn full-width mt-4" 
+              onClick={addQuestion}
+            >
+              <Plus size={16} /> Add Question
+            </button>
+          </div>
 
-            <div className="editor-top-bar">
+          {/* Main Editor Area (Right) */}
+          {q && (
+            <div className="question-editor glass-panel">
+              <div className="editor-top-bar">
               <h4>Question {activeQuestion + 1}</h4>
               <button 
                 className="icon-btn danger" 
@@ -494,5 +494,6 @@ export default function QuizMakerEditor() {
         )}
       </div>
     </div>
+  </div>
   );
 }

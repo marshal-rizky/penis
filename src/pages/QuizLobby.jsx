@@ -17,7 +17,7 @@ export default function QuizLobby() {
   const [quizzes, setQuizzes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedTag, setSelectedTag] = useState(null);
+  const [selectedTags, setSelectedTags] = useState([]);
 
   useEffect(() => {
     fetchPublicQuizzes();
@@ -50,12 +50,23 @@ export default function QuizLobby() {
       result = result.filter(q => q.title.toLowerCase().includes(searchQuery.toLowerCase()));
     }
     
-    if (selectedTag) {
-      result = result.filter(q => q.tags && q.tags.includes(selectedTag));
+    if (selectedTags.length > 0) {
+      // Show quiz if it has AT LEAST ONE of the selected tags (OR filtering)
+      result = result.filter(q => 
+        q.tags && q.tags.some(tag => selectedTags.includes(tag))
+      );
     }
     
     return result;
-  }, [quizzes, searchQuery, selectedTag]);
+  }, [quizzes, searchQuery, selectedTags]);
+
+  const toggleFilterTag = (tag) => {
+    setSelectedTags(prev => 
+      prev.includes(tag) 
+        ? prev.filter(t => t !== tag) 
+        : [...prev, tag]
+    );
+  };
 
   return (
     <div className="lobby-container">
@@ -95,16 +106,16 @@ export default function QuizLobby() {
               <Filter size={16} /> SPECIALIZATIONS
             </h4>
             <button 
-              className={`tag-btn ${!selectedTag ? 'active' : ''}`} 
-              onClick={() => setSelectedTag(null)}
+              className={`tag-btn ${selectedTags.length === 0 ? 'active' : ''}`} 
+              onClick={() => setSelectedTags([])}
             >
               All Trials
             </button>
             {OFFICIAL_TAGS.map(tag => (
               <button 
                 key={tag} 
-                className={`tag-btn ${selectedTag === tag ? 'active' : ''}`}
-                onClick={() => setSelectedTag(tag)}
+                className={`tag-btn ${selectedTags.includes(tag) ? 'active' : ''}`}
+                onClick={() => toggleFilterTag(tag)}
               >
                 {tag}
               </button>
@@ -125,7 +136,7 @@ export default function QuizLobby() {
             <div className="glass-panel" style={{ padding: '5rem', textAlign: 'center', background: 'rgba(0,0,0,0.3)' }}>
               <Target size={48} color="rgba(255,255,255,0.1)" style={{ marginBottom: '1.5rem' }} />
               <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem' }}>No trials match your current filters.</p>
-              <button onClick={() => {setSearchQuery(''); setSelectedTag(null);}} className="back-link mt-4">Clear All Filters</button>
+              <button onClick={() => {setSearchQuery(''); setSelectedTags([]);}} className="back-link mt-4">Clear All Filters</button>
             </div>
           ) : (
             <div className="quiz-grid">
