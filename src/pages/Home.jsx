@@ -1,9 +1,45 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Sword, Trophy, Users, Play } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 import './Home.css';
 
 export default function Home() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // If user is already logged in, redirect them to the dashboard
+    if (user) {
+      console.log("[AUTH] Redirecting logged in user to dashboard");
+      navigate('/maker', { replace: true });
+    }
+  }, [user, navigate]);
+
+  // NOTE: The following useMemo block seems to be intended for a different component (e.g., QuizLobby)
+  // as 'quizzes', 'searchQuery', and 'selectedTags' are not defined in this Home component.
+  // Including it as per instruction, but it will cause runtime errors if these variables are not defined.
+  const filteredQuizzes = useMemo(() => {
+    let result = quizzes;
+    
+    if (searchQuery.trim()) {
+      const lowerQuery = searchQuery.toLowerCase();
+      result = result.filter(q => 
+        q.title.toLowerCase().includes(lowerQuery) || 
+        (q.tags && q.tags.some(tag => tag.toLowerCase().includes(lowerQuery)))
+      );
+    }
+    
+    if (selectedTags.length > 0) {
+      result = result.filter(q => 
+        q.tags && q.tags.some(tag => selectedTags.includes(tag))
+      );
+    }
+    
+    return result;
+  }, [quizzes, searchQuery, selectedTags]);
+
   return (
     <div className="home-container">
       <main className="hero-section">

@@ -375,9 +375,9 @@ export default function QuizMakerEditor() {
       </div>
 
       <div className="editor-main-content">
-        {/* TRIAL SPECIALIZATIONS - WIDE BAR ABOVE GRID */}
-        <div className="editor-tags-wide glass-panel mb-4">
-          <span style={{ color: 'var(--hextech-gold)', fontSize: '0.9rem', fontWeight: 'bold', letterSpacing: '2px', marginRight: '2rem' }}>
+        {/* TRIAL SPECIALIZATIONS - SLIMMER BAR */}
+        <div className="editor-tags-wide glass-panel mb-2" style={{ padding: '0.4rem 1.5rem', minHeight: 'auto' }}>
+          <span style={{ color: 'var(--hextech-gold)', fontSize: '0.75rem', fontWeight: 'bold', letterSpacing: '1px', marginRight: '1rem' }}>
             TRIAL SPECIALIZATIONS:
           </span>
           <div className="tags-list" style={{ display: 'inline-flex', flexWrap: 'wrap', gap: '0.75rem' }}>
