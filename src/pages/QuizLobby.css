@@ -124,48 +124,68 @@
 
 @media (max-width: 768px) {
   .lobby-container {
-    padding: 1rem;
+    padding: 1rem 0.5rem;
+  }
+
+  .lobby-header {
+    margin-bottom: 1.5rem;
+    padding: 0 1rem;
   }
 
   .lobby-header h2 {
-    font-size: 2rem !important;
+    font-size: 1.8rem !important;
     letter-spacing: 1px !important;
-  }
-
-  .lobby-header p {
-    font-size: 1rem !important;
   }
 
   .lobby-main {
     grid-template-columns: 1fr;
-    gap: 1.5rem;
+    gap: 1rem;
   }
 
   .lobby-sidebar {
-    order: -1; /* Keep sidebar/filters at top */
+    order: -1;
+    background: rgba(4, 15, 22, 0.5);
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 0 0.5rem;
   }
 
   .tag-filter-group {
     flex-direction: row;
     overflow-x: auto;
-    padding-bottom: 0.5rem;
-    gap: 0.5rem;
+    padding-bottom: 0.8rem;
+    gap: 0.8rem;
     -webkit-overflow-scrolling: touch;
-    border-bottom: 1px solid rgba(10, 200, 185, 0.1);
+    scrollbar-width: none;
+  }
+
+  .tag-filter-group::-webkit-scrollbar {
+    display: none;
   }
 
   .tag-btn {
     white-space: nowrap;
-    padding: 0.5rem 1rem;
+    padding: 0.6rem 1rem;
     font-size: 0.8rem;
     flex-shrink: 0;
+    border-radius: 20px; /* More mobile-friendly pill shape */
   }
 
   .quiz-grid {
-    grid-template-columns: 1fr; /* Single column on mobile */
+    grid-template-columns: 1fr !important;
+    padding: 0 0.5rem;
   }
 
   .card-wide {
-    max-width: 100%;
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+
+  .card-content {
+    padding: 1.25rem;
+  }
+
+  .card-banner {
+    height: 100px;
   }
 }
