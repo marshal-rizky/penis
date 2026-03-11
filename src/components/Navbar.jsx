@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Sword, Settings, User, LogOut } from 'lucide-react';
+import { Sword, Settings, User, LogOut, Menu, X } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import './Navbar.css';
 
@@ -8,6 +8,7 @@ export default function Navbar() {
   const { user, signOut } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Don't show navbar if in gameplay view
   if (location.pathname.startsWith('/play/')) {
@@ -15,16 +16,19 @@ export default function Navbar() {
   }
 
   const handleLogout = async () => {
+    setIsMobileMenuOpen(false);
     await signOut();
     navigate('/login');
   };
+
+  const closeMenu = () => setIsMobileMenuOpen(false);
 
   const displayName = user?.user_metadata?.display_name || (user?.email ? user.email.split('@')[0] : 'Summoner');
 
   return (
     <nav className="global-navbar">
       <div className="nav-left">
-        <Link to="/" className="brand-link">
+        <Link to="/" className="brand-link" onClick={closeMenu}>
           <div className="brand-logo">
             <Sword size={20} color="#0ac8b9" />
           </div>
@@ -32,20 +36,43 @@ export default function Navbar() {
         </Link>
       </div>
 
-      <div className="nav-center">
-        <Link to={user ? "/maker" : "/login"} className={`nav-link ${location.pathname === '/maker' || location.pathname === '/' && user ? 'active' : ''}`}>
+      <button className="mobile-menu-btn" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+        {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+      </button>
+
+      <div className={`nav-center ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
+        <Link to={user ? "/maker" : "/login"} 
+              className={`nav-link ${location.pathname === '/maker' || location.pathname === '/' && user ? 'active' : ''}`}
+              onClick={closeMenu}>
           Dashboard
         </Link>
-        <Link to="/lobby" className={`nav-link ${location.pathname === '/lobby' ? 'active' : ''}`}>
+        <Link to="/lobby" 
+              className={`nav-link ${location.pathname === '/lobby' ? 'active' : ''}`}
+              onClick={closeMenu}>
           Vault
         </Link>
-        <Link to={user ? "/settings" : "/login"} className={`nav-link ${location.pathname === '/settings' ? 'active' : ''}`}>
+        <Link to={user ? "/settings" : "/login"} 
+              className={`nav-link ${location.pathname === '/settings' ? 'active' : ''}`}
+              onClick={closeMenu}>
           <Settings size={14} style={{ marginRight: '6px' }} />
           Settings
         </Link>
+
+        {/* Guest/Logout links inside mobile menu */}
+        <div className="mobile-only-actions">
+          {user ? (
+            <button onClick={handleLogout} className="mobile-nav-btn logout">
+              <LogOut size={16} /> LOGOUT
+            </button>
+          ) : (
+            <Link to="/login" className="mobile-nav-btn login" onClick={closeMenu}>
+              <User size={16} /> LOGIN
+            </Link>
+          )}
+        </div>
       </div>
 
-      <div className="nav-right">
+      <div className="nav-right desktop-only">
         {user ? (
           <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
             <Link to="/settings" className="user-profile-widget" style={{ textDecoration: 'none' }} title="Go to Settings">

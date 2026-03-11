@@ -193,3 +193,55 @@
   opacity: 0.3 !important;
   filter: grayscale(100%);
 }
+
+@media (max-width: 768px) {
+  .game-header {
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+  }
+
+  .timer {
+    font-size: 1.5rem;
+  }
+
+  .question-text {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+  }
+
+  .question-image-container {
+    max-width: 100%;
+    margin-bottom: 1rem;
+  }
+
+  .options-grid {
+    grid-template-columns: 1fr; /* Stack options on mobile */
+    grid-template-rows: auto;
+    height: auto;
+    min-height: auto;
+    gap: 0.75rem;
+  }
+
+  .option-btn {
+    padding: 1.5rem 1rem;
+    font-size: 1.1rem;
+    min-height: 80px;
+  }
+
+  .skill-key {
+    width: 30px;
+    height: 30px;
+    font-size: 0.8rem;
+    top: 0.75rem;
+    left: 0.75rem;
+  }
+
+  .time-up-overlay h2 {
+    font-size: 3rem;
+  }
+}
