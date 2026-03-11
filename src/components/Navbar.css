@@ -154,72 +154,74 @@
   gap: 0.5rem;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .global-navbar {
-    padding: 1rem 1.5rem;
-    background: #02090f; /* Solid dark background for mobile top bar */
+    padding: 1rem 1.5rem !important;
+    background: #02090f !important; /* Solid dark background */
   }
 
   .mobile-menu-btn {
-    display: block;
-    position: relative;
-    z-index: 1001; /* Above everything */
+    display: block !important;
+    position: relative !important;
+    z-index: 2001 !important; /* Above EVERYTHING */
   }
 
   .nav-center {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: #02090f; /* Solid background for the whole screen menu */
-    flex-direction: column;
-    padding: 6rem 2rem 2rem 2rem;
-    gap: 1.5rem;
-    align-items: center;
-    justify-content: flex-start;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background: #02090f !important; /* Solid background */
+    flex-direction: column !important;
+    padding: 6rem 2rem 2rem 2rem !important;
+    gap: 1.5rem !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
     transform: translateX(100%);
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    z-index: 1000;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    z-index: 2000 !important;
+    visibility: hidden;
   }
 
   .nav-center.mobile-open {
     transform: translateX(0);
+    visibility: visible;
   }
 
   .nav-link {
-    font-size: 1.8rem;
-    width: 100%;
-    text-align: center;
-    padding: 1.5rem 0;
-    border-bottom: 1px solid rgba(10, 200, 185, 0.1);
+    font-size: 1.8rem !important;
+    width: 100% !important;
+    text-align: center !important;
+    padding: 1.5rem 0 !important;
+    border-bottom: 1px solid rgba(10, 200, 185, 0.1) !important;
   }
 
   .nav-link.active::after {
-    display: none;
+    display: none !important;
   }
 
   .desktop-only {
-    display: none;
+    display: none !important;
   }
 
   .mobile-only-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    width: 100%;
-    padding-top: 2rem;
-    margin-top: 2rem;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1.5rem !important;
+    width: 100% !important;
+    padding-top: 2rem !important;
+    margin-top: 2rem !important;
   }
   
   .brand-text {
-    font-size: 1.1rem;
-    position: relative;
-    z-index: 1001;
+    font-size: 1.1rem !important;
+    position: relative !important;
+    z-index: 2001 !important;
   }
 
   .brand-logo {
-    position: relative;
-    z-index: 1001;
+    position: relative !important;
+    z-index: 2001 !important;
   }
 }

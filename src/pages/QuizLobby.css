@@ -122,14 +122,14 @@
   color: var(--text-secondary);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .lobby-container {
-    padding: 1rem 0.5rem;
+    padding: 1rem 0.5rem !important;
   }
 
   .lobby-header {
-    margin-bottom: 1.5rem;
-    padding: 0 1rem;
+    margin-bottom: 1.5rem !important;
+    padding: 0 1rem !important;
   }
 
   .lobby-header h2 {
@@ -138,54 +138,58 @@
   }
 
   .lobby-main {
-    grid-template-columns: 1fr;
-    gap: 1rem;
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
   }
 
   .lobby-sidebar {
-    order: -1;
-    background: rgba(4, 15, 22, 0.5);
-    padding: 1rem;
-    border-radius: 8px;
-    margin: 0 0.5rem;
+    order: -1 !important;
+    background: rgba(4, 15, 22, 0.5) !important;
+    padding: 1rem !important;
+    border-radius: 8px !important;
+    margin: 0 0.5rem !important;
+    display: block !important;
   }
 
   .tag-filter-group {
-    flex-direction: row;
-    overflow-x: auto;
-    padding-bottom: 0.8rem;
-    gap: 0.8rem;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    padding-bottom: 0.8rem !important;
+    gap: 0.8rem !important;
+    display: flex !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
   }
 
   .tag-filter-group::-webkit-scrollbar {
-    display: none;
+    display: none !important;
   }
 
   .tag-btn {
-    white-space: nowrap;
-    padding: 0.6rem 1rem;
-    font-size: 0.8rem;
-    flex-shrink: 0;
-    border-radius: 20px; /* More mobile-friendly pill shape */
+    white-space: nowrap !important;
+    padding: 0.6rem 1rem !important;
+    font-size: 0.8rem !important;
+    flex-shrink: 0 !important;
+    border-radius: 20px !important;
   }
 
   .quiz-grid {
     grid-template-columns: 1fr !important;
-    padding: 0 0.5rem;
+    padding: 0 0.5rem !important;
+    display: grid !important;
   }
 
   .card-wide {
-    width: 100%;
-    margin-bottom: 1rem;
+    width: 100% !important;
+    margin-bottom: 1rem !important;
+    display: block !important;
   }
 
   .card-content {
-    padding: 1.25rem;
+    padding: 1.25rem !important;
   }
 
   .card-banner {
-    height: 100px;
+    height: 100px !important;
   }
 }
