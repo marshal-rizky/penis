@@ -5,6 +5,14 @@ import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../contexts/AuthContext';
 import './QuizMaker.css';
 
+const OFFICIAL_TAGS = [
+  "Map Awareness",
+  "Wave Management",
+  "Champion Matchups",
+  "Lane Macro",
+  "Fighting Mechanics"
+];
+
 export default function QuizMakerEditor() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -363,26 +371,26 @@ export default function QuizMakerEditor() {
         {/* Main Editor Area (Centered) */}
         {q && (
           <div className="question-editor glass-panel">
-            {/* Tag Selection Integrated Here */}
-            <div className="editor-tags-section mb-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '1rem', marginBottom: '1.5rem', display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'center' }}>
-              <span style={{ color: 'var(--hextech-gold)', fontSize: '0.8rem', fontWeight: 'bold' }}>TRIAL TYPE:</span>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                {[
-                  "Map Awareness",
-                  "Wave Management",
-                  "Champion Matchups",
-                  "Lane Macro",
-                  "Fighting Mechanics"
-                ].map(tag => (
-                  <button 
-                    key={tag} 
-                    className={`mini-tag-toggle ${selectedTags.includes(tag) ? 'active' : ''}`}
-                    onClick={(e) => { e.stopPropagation(); toggleTag(tag); }}
-                    type="button"
-                  >
-                    {tag}
-                  </button>
-                ))}
+            {/* Tag Selection Overhaul */}
+            <div className="editor-tags-section">
+              <span style={{ color: 'var(--hextech-gold)', fontSize: '0.8rem', fontWeight: 'bold', display: 'block', marginBottom: '1rem' }}>
+                TRIAL CLASSIFICATION:
+              </span>
+              <div className="tags-list">
+                {OFFICIAL_TAGS.map(tag => {
+                  const isActive = selectedTags.includes(tag);
+                  return (
+                    <button 
+                      key={tag} 
+                      type="button"
+                      className={`tag-widget ${isActive ? 'active' : ''}`}
+                      onClick={() => toggleTag(tag)}
+                    >
+                      {tag}
+                      {isActive && <span className="tag-unselect-x">×</span>}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
