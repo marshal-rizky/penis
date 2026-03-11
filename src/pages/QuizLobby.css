@@ -1,0 +1,129 @@
+.lobby-container {
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  min-height: calc(100vh - 72px);
+}
+
+.lobby-header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.lobby-main {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 2rem;
+}
+
+.lobby-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.tag-filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tag-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(10, 200, 185, 0.2);
+  color: var(--text-secondary);
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+}
+
+.tag-btn:hover {
+  background: rgba(10, 200, 185, 0.1);
+  border-color: var(--hextech-magic);
+}
+
+.tag-btn.active {
+  background: var(--hextech-magic);
+  color: #000;
+  font-weight: bold;
+  box-shadow: 0 0 15px var(--hextech-magic-glow);
+}
+
+.quiz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  align-content: start;
+}
+
+.card-wide {
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+}
+
+.card-wide:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 20px rgba(10, 200, 185, 0.2);
+}
+
+.card-banner {
+  height: 120px;
+  background: linear-gradient(135deg, #05141c 0%, #092433 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.card-banner::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+}
+
+.card-content {
+  padding: 1.5rem;
+}
+
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.mini-tag {
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  background: rgba(10, 200, 185, 0.15);
+  color: var(--hextech-magic);
+  border-radius: 2px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.5rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 768px) {
+  .lobby-main {
+    grid-template-columns: 1fr;
+  }
+}

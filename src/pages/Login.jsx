@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Sword } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import './Auth.css'; // We'll create this file
+import { supabase } from '../lib/supabaseClient';
+import './Auth.css'; 
 
 export default function Login() {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -19,8 +20,23 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const { error } = await signIn({ email, password });
-      if (error) throw error;
+      // 1. Look up email by username in profiles table
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('email')
+        .eq('username', username)
+        .maybeSingle();
+
+      if (profileError) throw profileError;
+      if (!profile) throw new Error("Summoner not found in the vault.");
+
+      // 2. Sign in using the found email
+      const { error: loginError } = await signIn({ 
+        email: profile.email, 
+        password 
+      });
+      
+      if (loginError) throw loginError;
       navigate('/maker');
     } catch (err) {
       setError(err.message);
@@ -51,13 +67,13 @@ export default function Login() {
 
           <form className="vault-form" onSubmit={handleSubmit}>
             <div className="form-group vault-form-group">
-              <label>SUMMONER NAME</label>
+              <label>SUMMONER NAME (USERNAME)</label>
               <div className="input-wrapper">
                 <input 
-                  type="email" 
-                  placeholder="Enter your email" 
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  type="text" 
+                  placeholder="Enter your username" 
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                   required
                 />
               </div>

@@ -12,6 +12,7 @@ export default function QuizMakerEditor() {
   const fileInputRef = useRef(null);
   
   const [title, setTitle] = useState('');
+  const [selectedTags, setSelectedTags] = useState([]);
   const [questions, setQuestions] = useState([
     {
       id: crypto.randomUUID(),
@@ -48,6 +49,7 @@ export default function QuizMakerEditor() {
         
       if (quizError) throw quizError;
       setTitle(quizData.title);
+      setSelectedTags(quizData.tags || []);
 
       const { data: qsData, error: qsError } = await supabase
         .from('questions')
@@ -106,6 +108,14 @@ export default function QuizMakerEditor() {
     const updated = [...questions];
     updated[activeQuestion].options[optIndex].text = text;
     setQuestions(updated);
+  };
+
+  const toggleTag = (tag) => {
+    setSelectedTags(prev => 
+      prev.includes(tag) 
+        ? prev.filter(t => t !== tag) 
+        : [...prev, tag]
+    );
   };
 
   const setCorrectOption = (optIndex) => {
@@ -199,7 +209,7 @@ export default function QuizMakerEditor() {
       if (currentQuizId === 'new') {
         const { data: newQuiz, error: insertError } = await supabase
           .from('quizzes')
-          .insert([{ title, creator_id: user.id }])
+          .insert([{ title, creator_id: user.id, tags: selectedTags }])
           .select()
           .single();
           
@@ -208,7 +218,7 @@ export default function QuizMakerEditor() {
       } else {
         const { error: updateError } = await supabase
           .from('quizzes')
-          .update({ title })
+          .update({ title, tags: selectedTags })
           .eq('id', currentQuizId);
         if (updateError) throw updateError;
       }
@@ -317,6 +327,29 @@ export default function QuizMakerEditor() {
           <button className="btn primary-btn" onClick={saveQuiz} disabled={isSaving}>
             <Save size={20} /> {isSaving ? 'Saving...' : 'Save Quiz'}
           </button>
+        </div>
+      </div>
+
+      {/* Tag Selection Section */}
+      <div className="editor-tags-section glass-panel mb-4" style={{ padding: '1.5rem', display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'center' }}>
+        <span style={{ color: 'var(--hextech-gold)', fontWeight: 'bold', marginRight: '0.5rem' }}>TRIAL SPECIALIZATIONS:</span>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+          {[
+            "Map Awareness",
+            "Wave Management",
+            "Champion Matchups",
+            "Lane Macro",
+            "Fighting Mechanics"
+          ].map(tag => (
+            <button 
+              key={tag} 
+              className={`mini-tag-toggle ${selectedTags.includes(tag) ? 'active' : ''}`}
+              onClick={() => toggleTag(tag)}
+              type="button"
+            >
+              {tag}
+            </button>
+          ))}
         </div>
       </div>
 

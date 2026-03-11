@@ -1,13 +1,23 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Play, Loader, Search } from 'lucide-react';
+import { Play, Loader, Search, Filter, Hash, User, Target } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
+import './QuizLobby.css';
+
+const OFFICIAL_TAGS = [
+  "Map Awareness",
+  "Wave Management",
+  "Champion Matchups",
+  "Lane Macro",
+  "Fighting Mechanics"
+];
 
 export default function QuizLobby() {
   const navigate = useNavigate();
   const [quizzes, setQuizzes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedTag, setSelectedTag] = useState(null);
 
   useEffect(() => {
     fetchPublicQuizzes();
@@ -16,10 +26,12 @@ export default function QuizLobby() {
   const fetchPublicQuizzes = async () => {
     try {
       setLoading(true);
-      // Fetch all public quizzes (RLS allows select for everyone)
       const { data, error } = await supabase
         .from('quizzes')
-        .select('*')
+        .select(`
+          *,
+          profiles (username)
+        `)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -32,66 +44,126 @@ export default function QuizLobby() {
   };
 
   const filteredQuizzes = useMemo(() => {
-    if (!searchQuery.trim()) return quizzes;
-    return quizzes.filter(q => q.title.toLowerCase().includes(searchQuery.toLowerCase()));
-  }, [quizzes, searchQuery]);
+    let result = quizzes;
+    
+    if (searchQuery.trim()) {
+      result = result.filter(q => q.title.toLowerCase().includes(searchQuery.toLowerCase()));
+    }
+    
+    if (selectedTag) {
+      result = result.filter(q => q.tags && q.tags.includes(selectedTag));
+    }
+    
+    return result;
+  }, [quizzes, searchQuery, selectedTag]);
 
   return (
-    <div className="page-container flex-center" style={{ minHeight: 'calc(100vh - 72px)' }}>
-      <div className="glass-panel auth-panel text-center" style={{ maxWidth: '800px', width: '100%', padding: '3rem' }}>
-        <h2 style={{ fontFamily: 'var(--font-heading)', color: 'var(--hextech-gold-light)', fontSize: '2.5rem', marginBottom: '0.5rem', letterSpacing: '2px' }}>ARTIFACT VAULT</h2>
-        <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem' }}>Browse all community-forged trials. Rank up your summoner profile or wander as a guest.</p>
-        
-        <div style={{ position: 'relative', marginBottom: '2rem', maxWidth: '500px', margin: '0 auto 2rem' }}>
-          <Search size={20} color="var(--hextech-magic)" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
-          <input 
-            type="text" 
-            placeholder="Search for a trial by title..." 
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            style={{ 
-              width: '100%', 
-              padding: '1rem 1rem 1rem 3rem', 
-              borderRadius: '4px', 
-              border: '1px solid rgba(10, 200, 185, 0.3)', 
-              background: 'rgba(0,0,0,0.5)', 
-              color: 'white',
-              fontSize: '1rem'
-            }}
-          />
-        </div>
-        
-        <div className="quiz-list my-4" style={{ textAlign: 'left', maxHeight: '50vh', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '1rem', paddingRight: '1rem' }}>
-          {loading ? (
-             <div className="flex-center py-4">
-               <Loader className="animate-spin text-hextech-magic" size={40} />
-             </div>
-          ) : filteredQuizzes.length === 0 ? (
-            <div className="empty-state" style={{ padding: '3rem', textAlign: 'center', background: 'rgba(0,0,0,0.3)', borderRadius: '8px' }}>
-              <p style={{ color: 'var(--text-secondary)' }}>No matches found matching "{searchQuery}". Try a different name.</p>
-            </div>
-          ) : filteredQuizzes.map(quiz => (
-            <div key={quiz.id} className="quiz-card glass-panel" style={{ padding: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderLeft: '3px solid var(--hextech-magic)' }}>
-              <div className="quiz-info">
-                <h3 style={{ fontSize: '1.3rem', marginBottom: '0.25rem', fontFamily: 'var(--font-heading)', color: 'white' }}>{quiz.title}</h3>
-                <p className="meta-text" style={{ color: 'var(--hextech-magic)', margin: 0, fontSize: '0.9rem' }}>{quiz.plays} plays</p>
-              </div>
-              <div className="quiz-actions">
-                <button 
-                  className="btn primary-btn" 
-                  onClick={() => navigate(`/play/${quiz.id}`)}
-                  style={{ padding: '0.5rem 1.5rem', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
-                >
-                  <Play size={16} /> ENTER TRIAL
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
+    <div className="lobby-container">
+      <div className="lobby-header">
+        <h2 style={{ fontFamily: 'var(--font-heading)', color: 'var(--hextech-gold-light)', fontSize: '3rem', marginBottom: '0.5rem', letterSpacing: '3px' }}>
+          ARCHIVE OF KNOWLEDGE
+        </h2>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '1.2rem' }}>
+          Browse community-forged trials and enhance your mastery.
+        </p>
+      </div>
 
-        <button className="back-link block mt-4" onClick={() => navigate('/')} style={{ margin: '0 auto' }}>
-          Abandon Queue
-        </button>
+      <div className="lobby-main">
+        <aside className="lobby-sidebar">
+          <div className="search-box glass-panel" style={{ padding: '1rem' }}>
+            <div style={{ position: 'relative' }}>
+              <Search size={18} color="var(--hextech-magic)" style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)' }} />
+              <input 
+                type="text" 
+                placeholder="Search trials..." 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                style={{ 
+                  width: '100%', 
+                  padding: '0.75rem 0.75rem 0.75rem 2.5rem', 
+                  borderRadius: '4px', 
+                  border: '1px solid rgba(10, 200, 185, 0.2)', 
+                  background: 'rgba(0,0,0,0.3)', 
+                  color: 'white'
+                }}
+              />
+            </div>
+          </div>
+
+          <div className="tag-filter-group glass-panel" style={{ padding: '1.5rem' }}>
+            <h4 style={{ color: 'var(--hextech-gold)', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Filter size={16} /> SPECIALIZATIONS
+            </h4>
+            <button 
+              className={`tag-btn ${!selectedTag ? 'active' : ''}`} 
+              onClick={() => setSelectedTag(null)}
+            >
+              All Trials
+            </button>
+            {OFFICIAL_TAGS.map(tag => (
+              <button 
+                key={tag} 
+                className={`tag-btn ${selectedTag === tag ? 'active' : ''}`}
+                onClick={() => setSelectedTag(tag)}
+              >
+                {tag}
+              </button>
+            ))}
+          </div>
+
+          <button className="btn outline-btn" onClick={() => navigate('/')}>
+            Exit Vault
+          </button>
+        </aside>
+
+        <section className="quiz-content">
+          {loading ? (
+            <div className="flex-center py-4" style={{ height: '300px' }}>
+              <Loader className="animate-spin text-hextech-magic" size={50} />
+            </div>
+          ) : filteredQuizzes.length === 0 ? (
+            <div className="glass-panel" style={{ padding: '5rem', textAlign: 'center', background: 'rgba(0,0,0,0.3)' }}>
+              <Target size={48} color="rgba(255,255,255,0.1)" style={{ marginBottom: '1.5rem' }} />
+              <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem' }}>No trials match your current filters.</p>
+              <button onClick={() => {setSearchQuery(''); setSelectedTag(null);}} className="back-link mt-4">Clear All Filters</button>
+            </div>
+          ) : (
+            <div className="quiz-grid">
+              {filteredQuizzes.map(quiz => (
+                <div key={quiz.id} className="card-wide glass-panel">
+                  <div className="card-banner">
+                    <Hash size={40} color="rgba(10, 200, 185, 0.1)" />
+                  </div>
+                  <div className="card-content">
+                    <h3 style={{ fontSize: '1.4rem', color: 'white', fontFamily: 'var(--font-heading)', marginBottom: '0.75rem' }}>{quiz.title}</h3>
+                    
+                    <div className="card-tags">
+                      {quiz.tags && quiz.tags.length > 0 ? quiz.tags.map(t => (
+                        <span key={t} className="mini-tag">{t}</span>
+                      )) : <span className="mini-tag" style={{opacity: 0.5}}>General</span>}
+                    </div>
+
+                    <div className="card-meta">
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                        <User size={14} /> {quiz.profiles?.username || 'Ancient Mage'}
+                      </span>
+                      <span style={{ color: 'var(--hextech-magic)', fontWeight: 'bold' }}>
+                        {quiz.plays || 0} PLAYS
+                      </span>
+                    </div>
+
+                    <button 
+                      className="btn primary-btn full-width mt-4" 
+                      onClick={() => navigate(`/play/${quiz.id}`)}
+                    >
+                      CHALLENGE
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
       </div>
     </div>
   );

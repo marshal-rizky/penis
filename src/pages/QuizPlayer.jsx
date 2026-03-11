@@ -52,10 +52,11 @@ export default function QuizPlayer() {
       if (optsError) throw optsError;
 
       // 3. Increment play count (fire and forget)
-      supabase.rpc('increment_plays', { row_id: quizId }).then(); // Assuming an RPC, or we just do a raw update if RLS allows.
-      // Alternatively:
-      // const { data: currentQuiz } = await supabase.from('quizzes').select('plays').eq('id', quizId).single();
-      // await supabase.from('quizzes').update({ plays: currentQuiz.plays + 1 }).eq('id', quizId);
+      supabase.from('quizzes').select('plays').eq('id', quizId).single().then(({ data }) => {
+        if (data) {
+          supabase.from('quizzes').update({ plays: (data.plays || 0) + 1 }).eq('id', quizId).then();
+        }
+      });
 
       // Reconstruct for gameplay
       const formattedQuestions = qsData.map(q => {

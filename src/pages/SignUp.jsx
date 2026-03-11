@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Sword } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { supabase } from '../lib/supabaseClient';
 import './Auth.css';
 
 export default function SignUp() {
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -19,8 +21,25 @@ export default function SignUp() {
     setLoading(true);
 
     try {
-      const { error } = await signUp({ email, password });
-      if (error) throw error;
+      // 1. Sign up the user
+      const { data, error: signUpError } = await signUp({ 
+        email, 
+        password,
+        options: {
+          data: { display_name: username }
+        }
+      });
+      if (signUpError) throw signUpError;
+
+      // 2. Create the profile record
+      if (data.user) {
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .insert([{ id: data.user.id, username, email }]);
+        
+        if (profileError) throw profileError;
+      }
+
       navigate('/maker');
     } catch (err) {
       setError(err.message);
@@ -51,7 +70,19 @@ export default function SignUp() {
 
           <form className="vault-form" onSubmit={handleSubmit}>
             <div className="form-group vault-form-group">
-              <label>SUMMONER NAME</label>
+              <label>SUMMONER NAME (USERNAME)</label>
+              <div className="input-wrapper">
+                <input 
+                  type="text" 
+                  placeholder="Choose a username" 
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+            <div className="form-group vault-form-group">
+              <label>CONTACT CRYSTAL (EMAIL)</label>
               <div className="input-wrapper">
                 <input 
                   type="email" 
