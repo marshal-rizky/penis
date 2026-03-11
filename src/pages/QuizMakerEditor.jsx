@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { Save, Plus, Trash2, Image as ImageIcon, Loader, X, ArrowLeft } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
@@ -118,16 +118,17 @@ export default function QuizMakerEditor() {
     setQuestions(updated);
   };
 
-  const toggleTag = (tag) => {
-    console.log("Toggling tag:", tag);
+  const toggleTag = useCallback((tag) => {
+    console.log("[DEBUG] Toggling tag:", tag);
     setSelectedTags(prev => {
-      const next = prev.includes(tag) 
+      const isAlreadySelected = prev.includes(tag);
+      const next = isAlreadySelected 
         ? prev.filter(t => t !== tag) 
         : [...prev, tag];
-      console.log("New selected tags:", next);
+      console.log("[DEBUG] New tags state:", next);
       return next;
     });
-  };
+  }, []);
 
   const setCorrectOption = (optIndex) => {
     const updated = [...questions];
@@ -218,7 +219,7 @@ export default function QuizMakerEditor() {
       let currentQuizId = id;
 
       if (currentQuizId === 'new') {
-        console.log("Creating new quiz with tags:", selectedTags);
+        console.log("[SAVE] Creating new quiz with tags:", selectedTags);
         const { data: newQuiz, error: insertError } = await supabase
           .from('quizzes')
           .insert([{ title, creator_id: user.id, tags: selectedTags }])
@@ -227,8 +228,9 @@ export default function QuizMakerEditor() {
           
         if (insertError) throw insertError;
         currentQuizId = newQuiz.id;
+        console.log("[SAVE] New quiz ID generated:", currentQuizId);
       } else {
-        console.log("Updating quiz", currentQuizId, "with tags:", selectedTags);
+        console.log("[SAVE] Updating existing quiz", currentQuizId, "with tags:", selectedTags);
         const { error: updateError } = await supabase
           .from('quizzes')
           .update({ title, tags: selectedTags })
@@ -236,15 +238,40 @@ export default function QuizMakerEditor() {
         if (updateError) throw updateError;
       }
 
+      // --- CRITICAL FIX: EXPLICIT DELETION TO PREVENT DOUBLING ---
       if (id !== 'new') {
-        const { error: delError } = await supabase
+        console.log("[SAVE] Cleaning up old data for quiz:", currentQuizId);
+        
+        // 1. Get all question IDs for this quiz
+        const { data: existingQs } = await supabase
           .from('questions')
-          .delete()
+          .select('id')
           .eq('quiz_id', currentQuizId);
-        if (delError) throw delError;
+        
+        if (existingQs && existingQs.length > 0) {
+          const qIds = existingQs.map(q => q.id);
+          
+          // 2. Delete all options for these questions
+          console.log("[SAVE] Deleting old options...");
+          const { error: optDelErr } = await supabase
+            .from('options')
+            .delete()
+            .in('question_id', qIds);
+          if (optDelErr) console.warn("Option cleanup warning:", optDelErr);
+          
+          // 3. Delete all questions
+          console.log("[SAVE] Deleting old questions...");
+          const { error: qDelErr } = await supabase
+            .from('questions')
+            .delete()
+            .eq('quiz_id', currentQuizId);
+          if (qDelErr) throw qDelErr;
+        }
       }
 
+      console.log("[SAVE] Batch inserting new questions and options...");
       for (const q of questions) {
+        // ... rest of the question insertion remains the same ...
         const { data: newQ, error: qError } = await supabase
           .from('questions')
           .insert([{ quiz_id: currentQuizId, text: q.text, image_url: q.imageUrl }])
@@ -267,9 +294,13 @@ export default function QuizMakerEditor() {
         if (oError) throw oError;
       }
 
+      console.log("[SAVE] Save complete!");
       alert("Quiz saved successfully!");
+      
+      // If we were creating a NEW quiz, redirect to the EDIT page of that quiz
+      // This prevents "doubling" if the user hits save twice without refreshing
       if (id === 'new') {
-        navigate(`/maker`);
+        navigate(`/maker/edit/${currentQuizId}`);
       }
       
     } catch (error) {
