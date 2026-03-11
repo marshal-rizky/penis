@@ -218,8 +218,9 @@ export default function QuizMakerEditor() {
     try {
       let currentQuizId = id;
 
+      // 1. Create or Update the Quiz metadata
       if (currentQuizId === 'new') {
-        console.log("[SAVE] Creating new quiz with tags:", selectedTags);
+        console.log("[SAVE] Creating new trial:", title);
         const { data: newQuiz, error: insertError } = await supabase
           .from('quizzes')
           .insert([{ title, creator_id: user.id, tags: selectedTags }])
@@ -228,9 +229,8 @@ export default function QuizMakerEditor() {
           
         if (insertError) throw insertError;
         currentQuizId = newQuiz.id;
-        console.log("[SAVE] New quiz ID generated:", currentQuizId);
       } else {
-        console.log("[SAVE] Updating existing quiz", currentQuizId, "with tags:", selectedTags);
+        console.log("[SAVE] Updating existing trial:", currentQuizId);
         const { error: updateError } = await supabase
           .from('quizzes')
           .update({ title, tags: selectedTags })
@@ -238,51 +238,42 @@ export default function QuizMakerEditor() {
         if (updateError) throw updateError;
       }
 
-      // --- CRITICAL FIX: EXPLICIT DELETION TO PREVENT DOUBLING ---
+      // 2. CRITICAL CLEANUP: Wipe all old questions and options first
+      // If the database has ON DELETE CASCADE (which we'll ensure in the SQL step),
+      // deleting the questions alone will wipe the options automatically.
       if (id !== 'new') {
-        console.log("[SAVE] Cleaning up old data for quiz:", currentQuizId);
-        
-        // 1. Get all question IDs for this quiz
-        const { data: existingQs } = await supabase
+        console.log("[SAVE] Cleaning up old artifacts for quiz:", currentQuizId);
+        const { error: cleanupError } = await supabase
           .from('questions')
-          .select('id')
+          .delete()
           .eq('quiz_id', currentQuizId);
         
-        if (existingQs && existingQs.length > 0) {
-          const qIds = existingQs.map(q => q.id);
-          
-          // 2. Delete all options for these questions
-          console.log("[SAVE] Deleting old options...");
-          const { error: optDelErr } = await supabase
-            .from('options')
-            .delete()
-            .in('question_id', qIds);
-          if (optDelErr) console.warn("Option cleanup warning:", optDelErr);
-          
-          // 3. Delete all questions
-          console.log("[SAVE] Deleting old questions...");
-          const { error: qDelErr } = await supabase
-            .from('questions')
-            .delete()
-            .eq('quiz_id', currentQuizId);
-          if (qDelErr) throw qDelErr;
+        if (cleanupError) {
+          console.error("[SAVE] Cleanup failed! This usually means RLS is blocking DELETE:", cleanupError);
+          throw new Error("Failed to clear old questions. Please ensure you have the correct permissions (SQL fix required).");
         }
       }
 
-      console.log("[SAVE] Batch inserting new questions and options...");
+      // 3. BATCH INSERT NEW CONTENT
+      console.log("[SAVE] Forging new questions...");
       for (const q of questions) {
-        // ... rest of the question insertion remains the same ...
+        // Insert Question
         const { data: newQ, error: qError } = await supabase
           .from('questions')
-          .insert([{ quiz_id: currentQuizId, text: q.text, image_url: q.imageUrl }])
+          .insert([{ 
+            quiz_id: currentQuizId, 
+            text: q.text || 'Empty Question', 
+            image_url: q.imageUrl 
+          }])
           .select()
           .single();
           
         if (qError) throw qError;
 
+        // Insert Options for this question
         const optionsToInsert = q.options.map(o => ({
           question_id: newQ.id,
-          text: o.text,
+          text: o.text || '...',
           is_correct: o.isCorrect,
           color: o.colorId
         }));
@@ -294,18 +285,16 @@ export default function QuizMakerEditor() {
         if (oError) throw oError;
       }
 
-      console.log("[SAVE] Save complete!");
-      alert("Quiz saved successfully!");
+      console.log("[SAVE] Ritual complete. Artifact preserved.");
+      alert("Trial saved successfully!");
       
-      // If we were creating a NEW quiz, redirect to the EDIT page of that quiz
-      // This prevents "doubling" if the user hits save twice without refreshing
       if (id === 'new') {
         navigate(`/maker/edit/${currentQuizId}`);
       }
       
     } catch (error) {
-      console.error("Save error:", error);
-      alert("Failed to save quiz: " + error.message);
+      console.error("[SAVE ERROR]", error);
+      alert("Forge failure: " + error.message);
     } finally {
       setIsSaving(false);
     }
